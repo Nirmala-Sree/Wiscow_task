@@ -1,0 +1,43 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main   # Trigger the workflow on push to the main branch
+
+jobs:
+  build:
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner for the job
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v2  # Checkout the code from the repository
+
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2  # Set up Buildx for multi-platform Docker builds
+
+    - name: Login to Docker Hub
+      uses: docker/login-action@v2  # Log into Docker Hub to push images
+      with:
+        username: ${{ secrets.nirmala15 }}  # Docker Hub username from GitHub Secrets
+        password: ${{ secrets.Nirmala@9703 }}  # Docker Hub password from GitHub Secrets
+
+    - name: Build and Push Docker Image
+      run: |
+        docker build -t nirmala15/wisecow_app:latest .  # Build Docker image
+        docker push nirmala15/wisecow_app:latest    # Push Docker image to Docker Hub
+
+  deploy:
+    runs-on: ubuntu-latest   # Use the latest Ubuntu runner for deployment job
+    needs: build             # This job depends on the success of the build job
+    steps:
+    - name: Set up kubectl
+      uses: actions/setup-kubectl@v2  # Set up kubectl to interact with Kubernetes
+      with:
+        kubeconfig: ${{ secrets.KUBECONFIG }}  # Kubernetes config from GitHub Secrets
+
+    - name: Deploy to Kubernetes
+      run: |
+        kubectl apply -f deployment.yaml   # Deploy the application to Kubernetes
+        kubectl apply -f service.yaml      # Apply the service configuration
+        kubectl apply -f ingress.yaml      # Apply Ingress for TLS/HTTPS
