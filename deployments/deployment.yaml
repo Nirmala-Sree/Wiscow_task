@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wisecow-app-deployment
+spec:
+  replicas: 1  # Number of application instances (you can scale this as needed)
+  selector:
+    matchLabels:
+      app: wisecow-app
+  template:
+    metadata:
+      labels:
+        app: wisecow-app
+    spec:
+      containers:
+        - name: wisecow-app
+          image: nirmala/wisecow_app:latest  # Replace with your Docker image name
+          ports:
+            - containerPort: 5000  # The port your Flask app is running on
