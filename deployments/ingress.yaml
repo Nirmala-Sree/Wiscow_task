@@ -1,0 +1,21 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: wiscow-ingress
+  namespace: default
+spec:
+  rules:
+  - host: localhost  # Using localhost for local development
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: wisecow-app-service
+            port:
+              number: 80
+  tls:
+  - hosts:
+    - localhost  # Ensure it's consistent with the host
+    secretName: wiscow-tls-secret  # The TLS secret created earlier
