@@ -1,17 +1,17 @@
-# Use an official Python runtime as a parent image
+# Use the official Python image from Docker Hub
 FROM python:3.9-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy the current directory contents into the container at /app
-COPY . .
+# Copy the current directory contents into the container
+COPY . /app
 
-# Install any necessary dependencies (based on requirements.txt)
-RUN pip install -r requirements.txt
+# Install the dependencies from requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
 
-# Expose port 5000 for Flask to run
+# Expose the port that the app will run on
 EXPOSE 5000
 
-# Define the command to run the application
-CMD ["python", "app.py"]
+# Run the app using gunicorn (production-ready server)
+CMD ["gunicorn", "-b", "0.0.0.0:5000", "app:app"]
