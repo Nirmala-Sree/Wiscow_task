@@ -4,9 +4,10 @@ metadata:
   name: wisecow-app-service
 spec:
   selector:
-    app: wisecow-app  # Matches the app label from the deployment
+    app: wisecow-app
   ports:
     - protocol: TCP
-      port: 80       # External port
-      targetPort: 5000  # Port the application is running on inside the container
-  type: LoadBalancer  # Choose NodePort for local environments, LoadBalancer for cloud
+      port: 80
+      targetPort: 5000
+      nodePort: 30001  # Add this line for NodePort
+  type: NodePort  # Change to NodePort for local environments
